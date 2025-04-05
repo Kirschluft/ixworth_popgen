@@ -1,0 +1,15 @@
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - vcftools =0.1.16
+  - bcftools =1.21
+  - picard = 3.3.0
+  - samtools =1.21
+  - rust-bio-tools=0.42
+  - r-tidyverse =2.0.0
+  - r-argparser =0.7.2
+  - r-qqman
+  - r-fs =1.6.5
+  - r-upsetr =1.4.0

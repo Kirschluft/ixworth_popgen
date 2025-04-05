@@ -1,0 +1,12 @@
+channels:
+  - conda-forge
+  - bioconda
+  - nodefaults
+dependencies:
+  - vcftools =0.1.16
+  - r-tidyverse =2.0.0
+  - r-argparser =0.7.2
+  - bioconductor-rtracklayer =1.66.0
+  - r-qqman
+  - r-tidygenomics =0.1.2
+  - r-fs =1.6.5

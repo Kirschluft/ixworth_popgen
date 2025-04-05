@@ -1,0 +1,51 @@
+import pandas as pd
+
+
+configfile: "config/config.yaml"
+
+
+def get_samples():
+    samples = {
+        id: pd.read_csv(file["data"], sep="\t")["experiment_accession"]
+        for id, file in PROJECTS.items()
+    }
+    return samples
+
+
+PROJECTS = config["projects"]
+SAMPLES = get_samples()
+
+pairs = [
+    (p, s, PROJECTS[p]["format"]) for p, samples in SAMPLES.items() for s in samples
+]
+
+
+rule all:
+    input:
+        expand(
+            "results/{project}/{sample}/{fmt}/finished.txt",
+            zip,
+            project=[p for p, s, f in pairs],
+            sample=[s for p, s, f in pairs],
+            fmt=[f for p, s, f in pairs],
+        ),
+
+
+# runs enaDataGet, but should fail job if (partial) download did not work ...
+rule fetch_fastq:
+    output:
+        finished="results/{project}/{sample}/{fmt}/finished.txt",
+    log:
+        "logs/fetch/{project}/{fmt}/{sample}.log",
+    conda:
+        "envs/ena.yaml"
+    shell:
+        """
+        enaDataGet.py -f {wildcards.fmt} -d results/{wildcards.project}/ {wildcards.sample} > {log} 2>&1
+        if grep -q "Failed to download file" {log}; then
+          echo "Download failed for {wildcards.sample}" >> {log}
+          exit 1
+        fi
+        
+        touch {output.finished}
+        """

@@ -1,0 +1,6 @@
+term_name,term_id,p_value,term_size,query_size,intersection_size,precision,recall,source,effective_domain_size,source_order,parents,evidence_codes,intersection
+intracellularly ATP-gated chloride channel activity,GO:0005260,0.03748917067022228,1,17,1,0.058823529411764705,1,GO:MF,12697,1741,"GO:0005254,GO:0099095,GO:0099142",IEA,ENSGALG00000032986
+N-acetylgalactosaminyl-proteoglycan 3-beta-glucuronosyltransferase activity,GO:0050510,0.03748917067022228,1,17,1,0.058823529411764705,1,GO:MF,12697,8890,GO:0015020,IEA,ENSGALG00000026468
+voltage-gated calcium channel activity involved in bundle of His cell action potential,GO:0086057,0.03748917067022228,1,17,1,0.058823529411764705,1,GO:MF,12697,10151,GO:0086007,IEA,ENSGALG00000008486
+intracellularly ATP-gated ion channel activity,GO:0099142,0.03748917067022228,1,17,1,0.058823529411764705,1,GO:MF,12697,10433,"GO:0005217,GO:0035381",IEA,ENSGALG00000032986
+Sec61 translocon complex binding,GO:0106138,0.03748917067022228,1,17,1,0.058823529411764705,1,GO:MF,12697,11514,GO:0044877,IEA,ENSGALG00000032986

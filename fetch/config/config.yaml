@@ -1,0 +1,14 @@
+# Add ENA projects here with an according metadata run (tsv-file)
+# Retrieve data with the following command using e.g. wget and replace PRJEB30270/PRJEB89160 with the desired project
+# If this does not work, go to the projects in the ENA-Browser https://www.ebi.ac.uk/ena/browser/home
+# wget -O PRJEB30270.tsv https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJEB30270&result=read_run&fields=study_accession,sample_accession,experiment_accession,run_accession,tax_id,scientific_name,fastq_ftp,fastq_aspera,submitted_ftp,sra_ftp,bam_ftp&format=tsv&download=true&limit=0
+# wget -O PRJEB89160.tsv https://www.ebi.ac.uk/ena/portal/api/filereport?accession=PRJEB89160&result=read_run&fields=study_accession,sample_accession,experiment_accession,run_accession,tax_id,scientific_name,fastq_ftp,submitted_ftp,sra_ftp,bam_ftp&format=tsv&download=true&limit=0
+# The provided file PRJEB30270.tsv does not contain all runs of the project (unavailable at time of retrieval)
+
+projects:
+  PRJEB30270:
+    data: data/PRJEB30270.tsv
+    format: fastq # sets the format for enaDataGet {embl,fasta,submitted,fastq,sra}
+  PRJEB89160:
+    data: data/PRJEB89160.tsv
+    format: submitted # ENA did not yet provide all generated fastq files

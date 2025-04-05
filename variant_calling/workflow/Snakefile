@@ -1,0 +1,20 @@
+container: "docker://continuumio/miniconda3:25.1.1-2"
+
+
+rule all:
+    input:
+        "results/final/all.ann.vcf.gz",
+        "results/qc/multiqc.html",
+        "results/stats/bcftools_stats.txt",
+        "results/stats/picard_metrics",
+        "results/stats/bcftools_plots/",
+
+
+include: "rules/common.smk"
+include: "rules/ref.smk"
+include: "rules/mapping.smk"
+include: "rules/calling.smk"
+include: "rules/filtering.smk"
+include: "rules/stats.smk"
+include: "rules/qc.smk"
+include: "rules/annotation.smk"

@@ -1,0 +1,239 @@
+container: "docker://continuumio/miniconda3:25.1.1-2"
+
+
+# Common definitions
+configfile: "config/config.yaml"
+
+
+VCF_FILE = config["vcf_file"]
+CHROMOSOMES = config["chromosomes"]
+N_CHROMOSOMES = config["n_chromosomes"]
+POPULATIONS = config["populations"]
+FST_CONTRAST1 = [x[0] for x in config["contrasts"]["fst"]]
+FST_CONTRAST2 = [x[1] for x in config["contrasts"]["fst"]]
+HAPLO_CONTRAST1 = [x[0] for x in config["contrasts"]["haplo"]]
+HAPLO_CONTRAST2 = [x[1] for x in config["contrasts"]["haplo"]]
+
+
+rule all:
+    input:
+        # LD-decay
+        expand("results/vcfs/chr/chr{chr}.vcf.gz", chr=CHROMOSOMES),
+        expand(
+            "results/ld/pop/{population}.stat.gz", population=list(POPULATIONS.keys())
+        ),
+        expand(
+            "results/ld/chr/{population}_chr{chr}.stat.gz",
+            population=list(POPULATIONS.keys()),
+            chr=CHROMOSOMES,
+        ),
+        expand("results/ld/{population}_chr.png", population=list(POPULATIONS.keys())),
+        "results/ld/populations.png",
+        ## VCF statistics
+        "results/stats/consequence_all.tsv.gz",
+        "results/stats/consequence_worst.tsv.gz",
+        "results/stats/vcf_stats.tsv.gz",
+        "results/stats/intersection_upset.png",
+        "results/stats/populations.het",
+        "results/stats/populations.idepth",
+        "results/stats/populations.ldepth.mean",
+        "results/stats/populations.lqual",
+        "results/stats/populations.relatedness",
+        "results/stats/populations.TsTv.summary",
+        "results/stats/populations.lmiss",
+        "results/stats/populations.frq",
+        expand(
+            "results/stats/freq/{population}.frq", population=list(POPULATIONS.keys())
+        ),
+        expand(
+            "results/stats/tstv/{population}.TsTv.summary",
+            population=list(POPULATIONS.keys()),
+        ),
+        expand(
+            "results/stats/het/{population}.het", population=list(POPULATIONS.keys())
+        ),
+        expand(
+            "results/stats/lmiss/{population}.lmiss",
+            population=list(POPULATIONS.keys()),
+        ),
+        "results/stats/het/het_F_violinplot.png",
+        ## FST
+        expand(
+            "results/fst/windows/{pop1}_vs_{pop2}.windowed.weir.fst",
+            zip,
+            pop1=FST_CONTRAST1,
+            pop2=FST_CONTRAST2,
+        ),
+        expand(
+            "results/fst/sites/{pop1}_vs_{pop2}.weir.fst",
+            zip,
+            pop1=FST_CONTRAST1,
+            pop2=FST_CONTRAST2,
+        ),
+        expand(
+            "results/fst/{pop1}_vs_{pop2}_nsnps.png",
+            zip,
+            pop1=FST_CONTRAST1,
+            pop2=FST_CONTRAST2,
+        ),
+        expand(
+            "results/fst/{pop1}_vs_{pop2}_hist.png",
+            zip,
+            pop1=FST_CONTRAST1,
+            pop2=FST_CONTRAST2,
+        ),
+        expand(
+            "results/fst/{pop1}_vs_{pop2}_sweeps.csv",
+            zip,
+            pop1=FST_CONTRAST1,
+            pop2=FST_CONTRAST2,
+        ),
+        expand(
+            "results/fst/{pop1}_vs_{pop2}_sweeps_freq.png",
+            zip,
+            pop1=FST_CONTRAST1,
+            pop2=FST_CONTRAST2,
+        ),
+        expand(
+            "results/fst/{pop1}_vs_{pop2}_sweeps.png",
+            zip,
+            pop1=FST_CONTRAST1,
+            pop2=FST_CONTRAST2,
+        ),
+        "results/fst/summary.csv",
+        "results/fst/boxplot.png",
+        "results/fst/violinplot.png",
+        "results/fst/chr_summary.csv",
+        "results/fst/bar_chr.png",
+        "results/fst/dense_chr.png",
+        "results/fst/heatmap.png",
+        "results/fst/heatmap_chr.png",
+        ## Nucleotide diversity
+        expand(
+            "results/pi/{population}.windowed.pi", population=list(POPULATIONS.keys())
+        ),
+        "results/pi/summary.csv",
+        "results/pi/boxplot.png",
+        "results/pi/violinplot.png",
+        "results/pi/chr_summary.csv",
+        "results/pi/bar_chr.png",
+        "results/pi/dense_chr.png",
+        "results/pi/heatmap_chr.png",
+        expand("results/pi/{population}_hist.png", population=list(POPULATIONS.keys())),
+        expand(
+            "results/pi/{population}_manhattan.png",
+            population=list(POPULATIONS.keys()),
+        ),
+        ## Tajima's D
+        expand(
+            "results/tajimas/{population}.Tajima.D",
+            population=list(POPULATIONS.keys()),
+        ),
+        expand(
+            "results/tajimas/{population}_manhattan.png",
+            population=list(POPULATIONS.keys()),
+        ),
+        ## PCA and admixture
+        "results/vcfs/pruned.gds",
+        "results/pca/pca.png",
+        "results/pca/pca_top5.png",
+        ## ROH
+        "results/roh/roh_count_mean.png",
+        ## Admixture
+        "results/admixture/cross_validation.png",
+        "results/admixture/admixture.png",
+        ## Selective Sweeps
+        "results/phased/final_phased.vcf.gz",
+        expand(
+            "results/ihs/{population}_ihs.csv.gz", population=list(POPULATIONS.keys())
+        ),
+        expand(
+            "results/ihs/{population}_freq.csv.gz", population=list(POPULATIONS.keys())
+        ),
+        expand("results/ihs/{population}_hist.png", population=list(POPULATIONS.keys())),
+        expand(
+            "results/ihs/{population}_regions.csv", population=list(POPULATIONS.keys())
+        ),
+        expand(
+            "results/ihs/{population}_sweeps.csv", population=list(POPULATIONS.keys())
+        ),
+        expand(
+            "results/ihs/{population}_sweeps_freq.png",
+            population=list(POPULATIONS.keys()),
+        ),
+        expand(
+            "results/ihs/{population}_sweeps.png", population=list(POPULATIONS.keys())
+        ),
+        expand(
+            "results/xp_ehh/{pop1}_vs_{pop2}_xp_ehh.csv.gz",
+            zip,
+            pop1=HAPLO_CONTRAST1,
+            pop2=HAPLO_CONTRAST2,
+        ),
+        expand(
+            "results/xp_ehh/{pop1}_vs_{pop2}_hist.png",
+            zip,
+            pop1=HAPLO_CONTRAST1,
+            pop2=HAPLO_CONTRAST2,
+        ),
+        expand(
+            "results/xp_ehh/{pop1}_vs_{pop2}_regions.csv",
+            zip,
+            pop1=HAPLO_CONTRAST1,
+            pop2=HAPLO_CONTRAST2,
+        ),
+        expand(
+            "results/xp_ehh/{pop1}_vs_{pop2}_sweeps.csv",
+            zip,
+            pop1=HAPLO_CONTRAST1,
+            pop2=HAPLO_CONTRAST2,
+        ),
+        expand(
+            "results/xp_ehh/{pop1}_vs_{pop2}_sweeps_freq.png",
+            zip,
+            pop1=HAPLO_CONTRAST1,
+            pop2=HAPLO_CONTRAST2,
+        ),
+        expand(
+            "results/xp_ehh/{pop1}_vs_{pop2}_sweeps.png",
+            zip,
+            pop1=HAPLO_CONTRAST1,
+            pop2=HAPLO_CONTRAST2,
+        ),
+        ## Gene Function
+        expand(
+            "results/function/{pop1}_vs_{pop2}_xp_ehh_go_terms.csv",
+            zip,
+            pop1=HAPLO_CONTRAST1,
+            pop2=HAPLO_CONTRAST2,
+        ),
+        expand(
+            "results/function/{pop1}_vs_{pop2}_fst_go_terms.csv",
+            zip,
+            pop1=HAPLO_CONTRAST1,
+            pop2=HAPLO_CONTRAST2,
+        ),
+        expand(
+            "results/function/{population}_ihs_go_terms.csv",
+            population=list(POPULATIONS.keys()),
+        ),
+        ## Ne
+        expand(
+            "results/ne/{population}_pruned.vcf",
+            population=list(POPULATIONS.keys()),
+        ),
+        "results/ne/smcpp/historical_ne.csv",
+        expand(
+            "results/ne/ne_estimator/{population}_contemporary_ne.csv",
+            population=list(POPULATIONS.keys()),
+        ),
+
+
+include: "rules/ref.smk"
+include: "rules/filtering.smk"
+include: "rules/ld.smk"
+include: "rules/stats.smk"
+include: "rules/diversity.smk"
+include: "rules/structure.smk"
+include: "rules/selection.smk"
+include: "rules/ne.smk"

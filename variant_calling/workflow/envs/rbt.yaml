@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - bcftools =1.21
+  - rust-bio-tools =0.42
+  - matplotlib =3.9.3
+  - tectonic =0.15.0

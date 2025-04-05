@@ -1,0 +1,25 @@
+Bootstrap: docker
+From: rocker/tidyverse:4.4.1
+Stage: spython-base
+
+%post
+
+apt-get update && apt-get install -y \
+  libfftw3-dev jags wget unzip
+
+R -e "install.packages(c('dartRverse', 'BiocManager', 'argparser', 'vcfR'), \
+dependencies=TRUE, \
+repos='http://cran.rstudio.com/')" || exit 1
+
+R -e "BiocManager::install('snpStats', update = FALSE)" || exit 1
+
+R -e "BiocManager::install('SNPRelate', update = FALSE)" || exit 1
+
+R -e "install.packages('dartR.popgen')" || exit 1
+
+R -e "install.packages('dartR.base')" || exit 1
+
+%runscript
+exec /bin/bash "$@"
+%startscript
+exec /bin/bash "$@"

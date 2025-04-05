@@ -1,0 +1,23 @@
+Bootstrap: docker
+From: rocker/tidyverse:4.4.1
+Stage: spython-base
+
+%post
+
+apt-get update && apt-get install -y \
+libbz2-dev
+
+R -e "install.packages(c('qqman', 'rehh', 'BiocManager', 'argparser'), \
+dependencies=TRUE, \
+repos='http://cran.rstudio.com/')" || exit 1
+
+R -e "BiocManager::install('‘IRanges’', update=FALSE)" || exit 1
+
+R -e "BiocManager::install('rtracklayer', update=FALSE)" || exit 1
+
+R -e "install.packages('tidygenomics', dependencies=TRUE)" || exit 1
+
+%runscript
+exec /bin/bash "$@"
+%startscript
+exec /bin/bash "$@"

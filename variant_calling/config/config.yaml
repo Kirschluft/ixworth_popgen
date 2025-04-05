@@ -1,0 +1,65 @@
+samples: config/samples.tsv
+units: config/units.tsv
+
+ref:
+  species: gallus_gallus_gca000002315v5
+  release: 112
+  build: GRCg6a
+
+filtering:
+  # Set to true in order to apply machine learning based recalibration of
+  # quality scores instead of hard filtering.
+  # Only works with true training set, e.g. HapMap/Affymetrix
+  vqsr: false
+  hard:
+    # hard filtering as outlined in GATK docs
+    # (https://gatkforums.broadinstitute.org/gatk/discussion/2806/howto-apply-hard-filters-to-a-call-set)
+    snvs:
+      QD2: QD < 2.0
+      QUAL30: QUAL < 30.0
+      SOR3: SOR > 3.0
+      FS60: FS > 60.0
+      MQ40: MQ < 40.0
+      MQRankSum-12.5: MQRankSum < -12.5
+      ReadPosRankSum-8.0: ReadPosRankSum < -8.0
+    indels:
+      QD2: QD < 2.0
+      QUAL30: QUAL < 30.0
+      FS200: FS > 200.0
+      MQ40: MQ < 40.0
+      SOR10: SOR > 10.0
+      ReadPosRankSum-20.0: ReadPosRankSum < -20.0
+
+processing:
+  remove-duplicates: false
+  # Uncomment and point to a bed file with, e.g., captured regions if necessary,
+  # see https://gatkforums.broadinstitute.org/gatk/discussion/4133/when-should-i-use-l-to-pass-in-a-list-of-intervals.
+  # restrict-regions: captured_regions.bed
+  # If regions are restricted, uncomment this to enlarge them by the given value in order to include
+  # flanking areas.
+  # region-padding: 100
+
+params:
+  gatk:
+    HaplotypeCaller: " -A MappingQuality -A QualByDepth -A Coverage -A StrandBiasBySample -A FisherStrand -A StrandOddsRatio -A ReadPosRankSumTest -A MappingQualityRankSumTest -A InbreedingCoeff"
+    BaseRecalibrator: ""
+    GenotypeGVCFs: ""
+    VariantRecalibrator: " "
+    ApplyVQSR: " --truth-sensitivity-filter-level 99.0"
+  fastp:
+  # Take additional parameters for fastp https://github.com/OpenGene/fastp
+    - --qualified_quality_phred 20
+    - --unqualified_percent_limit 30
+    - --length_required 50
+    - --trim_poly_g
+    - --cut_mean_quality 20
+    - --detect_adapter_for_pe
+    - --cut_tail
+    - --compression 6
+
+  vep:
+    plugins:
+      # Add any plugin from https://www.ensembl.org/info/docs/tools/vep/script/vep_plugins.html
+      - LoFtool
+    # extra command line arguments (e.g. --sift, see docs)
+    extra: "--variant_class --sift b --nearest gene"

@@ -1,0 +1,128 @@
+# Configuration file for the analysis
+# VCF-file is acquired from the variant_calling pipeline
+vcf_file: data/results.vcf.gz
+
+# Reference genome annotations of chicken
+# Should correspond to the definition in the variant_calling pipeline
+ref:
+  species: gallus_gallus_gca000002315v5
+  release: 112
+  build: GRCg6a
+
+# Provided population definitions inside the repository
+# txt-files are single-column with IDs from the VCF-file
+populations:
+  ixworth: "data/populations/ixworth.txt"
+  red_junglefowl: "data/populations/red_junglefowl.txt"
+  broiler_line_A: "data/populations/commercial_broiler_line_A.txt"
+  broiler_line_B: "data/populations/commercial_broiler_line_B.txt"
+  brown_layer: "data/populations/commercial_brown_layer.txt"
+  white_layer: "data/populations/commercial_white_layer.txt"
+
+# List of assembled chromosomes of GRCg6a (red junglefowl)
+n_chromosomes: 33
+chromosomes:
+  - "1"
+  - "2"
+  - "3"
+  - "4"
+  - "5"
+  - "6"
+  - "7"
+  - "8"
+  - "9"
+  - "10"
+  - "11"
+  - "12"
+  - "13"
+  - "14"
+  - "15"
+  - "16"
+  - "17"
+  - "18"
+  - "19"
+  - "20"
+  - "21"
+  - "22"
+  - "23"
+  - "24"
+  - "25"
+  - "26"
+  - "27"
+  - "28"
+  - "30"
+  - "31"
+  - "32"
+  - "33"
+
+# Settings for FST/pi/tajima's D and haplotype-based analyses
+windows:
+  size: 40000
+  step: 20000
+
+# Names should be from the keys of the populations definitions
+contrasts:
+  fst:
+    - ["ixworth", "red_junglefowl"]
+    - ["ixworth", "broiler_line_A"]
+    - ["ixworth", "broiler_line_B"]
+    - ["ixworth", "brown_layer"]
+    - ["ixworth", "white_layer"]
+    - ["broiler_line_A", "brown_layer"]
+    - ["broiler_line_A", "white_layer"]
+    - ["broiler_line_A", "red_junglefowl"]
+    - ["broiler_line_A", "broiler_line_B"]
+    - ["broiler_line_B", "red_junglefowl"]
+    - ["broiler_line_B", "white_layer"]
+    - ["broiler_line_B", "brown_layer"]
+    - ["brown_layer", "red_junglefowl"]
+    - ["brown_layer", "white_layer"]
+    - ["white_layer", "red_junglefowl"]
+  haplo:
+    - ["ixworth", "red_junglefowl"]
+    - ["ixworth", "broiler_line_A"]
+    - ["ixworth", "broiler_line_B"]
+    - ["ixworth", "brown_layer"]
+    - ["ixworth", "white_layer"]
+
+# Settings for Beagle
+# see https://faculty.washington.edu/browning/beagle/beagle.html
+beagle:
+  burnin: 20
+  iterations: 50
+  mem: "256g"
+  extra: ""
+
+# tsv-file containing three columns for plink (IID containing sample names from vcf file), new FID and new IID
+populations_map: "data/populations/populations_map.txt"
+
+# genome length for roh analysis
+genome_length: 960796788
+
+# Settings for pruning based on PLINK --indep-pairwise NUMBER_VARIANTS STEP_SIZE THRESHOLD_R2 and --bp-space BP
+prune:
+  # LD-pruning for pca and admixture
+  pca_admixture: 50 5 0.2
+  # LD-pruning and distance-pruning for Ne (required independent loci)
+  ne:
+    ld: 200 5 0.1
+    bp_space: 1000000 # minimum distance between markers (--bp-space)
+    maf: 0.05 # minor allele frequency threshold
+
+# Settings for ADMIXTURE
+# see https://github.com/stevemussmann/admixturePipeline
+admixture:
+  k: 1   # minimum k
+  K: 10  # maximum k
+  c: 20  # cross-validation-fold
+
+# bed file containing QTLs from https://www.animalgenome.org/cgi-bin/QTLdb/index
+# should correspond to the reference genome used above or be empty (no search for QTL regions)
+# here, we used QTLs lifted to the GRCg6a genome (https://www.animalgenome.org/cgi-bin/QTLdb/GG/download?f=jiJHCuBaSwTzUn57F6we5&c=251004%205)
+qtls: data/Animal_QTLdb_release55_chickenGRCg6a.bed.gz
+
+# Settings for effective population size analyses (SMC++)
+ne:
+  generation_time: 1 # in years
+  mu: 1.91e-9 # mutation rate in base pairs per generation
+  folds: 5

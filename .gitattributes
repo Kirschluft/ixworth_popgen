@@ -1,0 +1,16 @@
+* text=auto
+
+*.md text encoding=utf-8
+*.txt text encoding=utf-8
+*.csv text encoding=utf-8
+*.tsv text encoding=utf-8
+
+*.jpg binary
+*.png binary
+*.pdf binary
+
+output/ export-ignore
+*.gz export-ignore
+*.zip export-ignore
+*.jpg export-ignore
+*.png export-ignore

@@ -1,0 +1,16 @@
+Statistic,Frequency 1,Frequency 2,Frequency 3
+Lowest Allele Frequency Used,0.050,0+,No S*
+Harmonic Mean Sample Size,13.8,16.1,15.4
+Independent Comparisons,874865,1592442,967348
+OverAll r^2,0.066667,0.058934,0.064284
+Expected r^2 Sample,0.060433,0.056226,0.058788
+Estimated Ne^,47.7,112,54.3
+CI low Parametric,46.1,106.8,52.5
+CI high Parametric,49.3,117.7,56.2
+CI low JackKnife,32.1,69.9,37
+CI high JackKnife,85.1,260.4,95.2
+Waples' corrected Ne,55.2,129.7,62.9
+Waples' corrected CI low Parametric,53.4,123.6,60.8
+Waples' corrected CI high Parametric,57.1,136.3,65.1
+Waples' corrected CI low JackKnife,37.2,80.9,42.8
+Waples' corrected CI high JackKnife,98.5,301.5,110.2
